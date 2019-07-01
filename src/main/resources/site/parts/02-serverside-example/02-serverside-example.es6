@@ -14,13 +14,11 @@ const view = resolve('02-serverside-example.html');
 exports.get = function(request) {
     const component = portal.getComponent();
 
-    // Request is still used to determine viewing mode. But .render
+    // Request is still used to determine viewing mode.
     return React4xp.render(
         request,
         {
             props: { greetee: component.config.greetee },
-            // Worth noting: since we're manually setting the id and jsxPath parameter, we don't need the
-            // component parameter here, compared to 01-minimal-example - getComponent() is only used for the props here.
             jsxPath: 'site/parts/01-minimal-example/01-minimal-example',
             id: 'serverside-example-container',
             body: thymeleaf.render(view, {})

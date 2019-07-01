@@ -6,8 +6,8 @@
 // - Combining both ways to refer to a react component: using component to refer to the local-to-the-part jsx file in
 // the same folder, and jsxPath to refer to an external react component. Both these ways are done with the
 // 'new React4xp' constructor.
-// - Nested react components and chunking: 'mySubfolder/ContainerGreeter' is the jsxPath to the entry ContainerGreeter.jsx
-// in src/main/resources/react4xp/_entries/mySubfolder. That imports InnerGreeter.jsx from src/main/resources/react4xp/myChunk,
+// - Nested react components and chunking: 'mySubfolder/ContainerGreeter' is the jsxPath to the entry BuilderEntry.jsx
+// in src/main/resources/react4xp/_entries/mySubfolder. That imports Builder.jsx from src/main/resources/react4xp/myChunk,
 // which means that the build will compile this into assets/react4xp:
 // a mySubfolder/ContainerGreeter.js entry file, and a myChunk.<hash>.js file which contains the InnerGreeter code.
 // - Component IDs are forced to be unique by adding a random postfix. This can be handy e.g. if a part uses
@@ -22,32 +22,47 @@ const view = resolve("04-chaining-example.html");
 // Handle the GET request
 exports.get = function(request) {
 
-    const localComponent = portal.getComponent();
-
-    const reactComp = new React4xp('mySubfolder/ContainerGreeter')
-        .setId("this-container-exists-in-html").uniqueId(true)
+    const firstComp = new React4xp('mySubfolder/BuilderEntry')
+        .setId("a-target-container")
         .setProps({
-            greeting: localComponent.config.greeting,
-            greetee: localComponent.config.greetee1
+            first: "Click",
+            second: "ME!"
         });
 
-    const importedComp = new React4xp(localComponent)
+    const secondComp = new React4xp(portal.getComponent())
+        .setId("another-target-container")
         .setProps({
-            greeting: localComponent.config.greeting,
-            greetee: localComponent.config.greetee2
-        })
-        .setId("this-container-does-not-exist").uniqueId(true);
+            first: "No click ME!",
+            second: "I do the exact same thing only better!"
+        });
 
-    const model = {
-        targetContainerIdFromController: reactComp.react4xpId
-    };
-    let body = thymeleaf.render(view, model);
+    let body = thymeleaf.render(view, {});
+    body = firstComp.renderSSRIntoContainer(body);
+    body = secondComp.renderTargetContainer(body);
 
-    body = reactComp.renderSSRIntoContainer(body);
-    let pageContributions = reactComp.renderHydrationPageContributions();
+    let pageContributions = firstComp.renderHydrationPageContributions();
+    pageContributions = secondComp.renderHydrationPageContributions(pageContributions);
 
-    body = importedComp.renderTargetContainer(body);
-    pageContributions = importedComp.renderHydrationPageContributions(pageContributions);
+    // ---- <hr /> ----
+
+    ['first', 'second', 'third', 'fourth'].forEach(cardinalNum => {
+        const notUniqueComp = new React4xp('site/parts/01-minimal-example/01-minimal-example')
+            .setId('this-is-not-unique')
+            .setProps({ greetee: `${cardinalNum} repeated ID`});
+
+        body = notUniqueComp.renderTargetContainer(body);
+        pageContributions = notUniqueComp.renderClientPageContributions(pageContributions);
+    });
+
+
+    ['first', 'second', 'third', 'fourth'].forEach(cardinalNum => {
+        const uniqueComp = new React4xp('site/parts/01-minimal-example/01-minimal-example')
+            .setId('this-id-is-unique').uniqueId()
+            .setProps({ greetee: `${cardinalNum} unique ID`});
+
+        body = uniqueComp.renderTargetContainer(body);
+        pageContributions = uniqueComp.renderClientPageContributions(pageContributions);
+    });
 
     return {
         body,

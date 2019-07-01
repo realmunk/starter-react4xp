@@ -1,5 +1,5 @@
 import React from 'react';
 
-import ContainerGreeter from '../../../react4xp/_entries/mySubfolder/ContainerGreeter';
+import BuilderEntry from '../../../react4xp/_entries/mySubfolder/BuilderEntry';
 
-export default (props) => <ContainerGreeter id={props.id} {...props} />;
+export default (props) => <BuilderEntry {...props} />;

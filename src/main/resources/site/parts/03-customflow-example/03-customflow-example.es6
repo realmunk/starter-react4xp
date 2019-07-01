@@ -13,7 +13,7 @@ const portal = require('/lib/xp/portal');
 const React4xp = require('/lib/enonic/react4xp');
 const thymeleaf = require('/lib/thymeleaf');
 
-const TARGET_ID = "blue-greeter-target-id";
+const TARGET_ID = "color-greeter-id";
 const view = resolve('03-customflow-example.html');
 const model = {
     targetId: TARGET_ID
@@ -26,17 +26,17 @@ exports.get = function(request) {
 
     // Constructor for setting a mandatory parameter: an XP component object, or as in this case: a jsxPath. 'Bluegreeter' is the
     // jsxPath to Bluegreeter.jsx, since that's at the root level of the react4xp-entries folder (src/main/resources/react4xp/_entries).
-    const reactComp = new React4xp('BlueGreeter');
+    const reactComp = new React4xp('ColorThing');
 
     // Builder pattern for setting additional optional attributes
     reactComp
         .setId(TARGET_ID)
         .setProps({
-            greetee: component.config.greetee
+            color: component.config.color
         });
 
     const preExistingPageContributions = {
-        bodyEnd: '<script>console.log("Example 03 is complete.");</script>'
+        bodyEnd: `<script>console.log('Okay, rendered the ${reactComp.props.color} thing.');</script>`
     };
 
     return {

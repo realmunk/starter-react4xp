@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <part>
 	<display-name>03 - CustomFlow Example</display-name>
-    <description>Server-side rendered independent react component src/main/react4xp/_entries/BlueGreeter.jsx</description>
+    <description>AKA. The Color Thing</description>
 	<form>
-        <input name="greetee" type="TextLine">
-            <label>Who should we greet?</label>
+        <input name="color" type="TextLine">
+            <label>What's the color of the thing?</label>
             <occurrences minimum="1" maximum="1"/>
-            <default>customflow</default>
+            <default>red</default>
         </input>
     </form>
 </part>
