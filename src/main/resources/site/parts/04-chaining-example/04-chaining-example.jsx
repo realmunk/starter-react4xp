@@ -1,5 +1,5 @@
 import React from 'react';
 
-import BuilderEntry from '../../../react4xp/_entries/mySubfolder/BuilderEntry';
+import BuilderClickerEntry from '../../../react4xp/_entries/mySubfolder/BuilderClickerEntry';
 
-export default (props) => <BuilderEntry {...props} />;
+export default (props) => <BuilderClickerEntry {...props} />;

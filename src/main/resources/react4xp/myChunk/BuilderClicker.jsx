@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Builder extends React.Component {
+class BuilderClicker extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -9,26 +9,23 @@ class Builder extends React.Component {
         }
     };
 
-    // Doubles the targeted state string
+    // Doubles the 'first' or 'second' string in state, depending on the key.
     makeMore = (key) => {
         this.setState({[key]: this.state[key] + " " + this.state[key]});
     };
 
     render() {
-        return <div className="chunked-builder">
-            <h2>
+        return <div className="builderclicker">
+            <h3>
                 <span onClick={() => this.makeMore('first')}
                       style={{cursor: "pointer"}}
                       className="first">{this.state.first}
                 </span> <span onClick={() => this.makeMore('second')}
-                      style={{cursor: "pointer"}}
-                      className="second">{this.state.second}</span>
-            </h2>
+                              style={{cursor: "pointer"}}
+                              className="second">{this.state.second}</span>
+            </h3>
         </div>;
     }
 };
 
-
-// ----------------------------------------------  Export
-
-export default (props) => <Builder {...props} />;
+export default (props) => <BuilderClicker {...props} />;
