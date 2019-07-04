@@ -41,9 +41,9 @@
     <!-- import React4xp and its frontend-core CLIENT (from the react4xp-client) and all its dependency chunks, and the component: -->
     <script data-th-each="url: ${urls}" data-th-src="${url}"></script>
 
-    <!-- Use React4xp.CLIENT to render the SimpleGreeter component into the 'target' element above, with some props: -->
+    <!-- Use React4xp.CLIENT to render the ColorThing component into the 'target' element above, with some props: -->
     <script defer>
-        React4xp.CLIENT.render(React4xp.SimpleGreeter, 'target', {greetee: "world"});
+        React4xp.CLIENT.render(React4xp.ColorThing, 'target', {color: "yellow"});
     </script>
 
     <a href="?pure">See the pure standalone version...</a>
