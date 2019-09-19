@@ -1,10 +1,11 @@
-// Minimal example, server-side rendering with hydration (react activation on the client side).
+// Minimal example, server-side rendering with hydration
+// (hydration is client-side react activating a pre-rendered react component).
+//
 // Inserts simple, hard-coded props to the React component, and
 // uses XP component (getComponent) to refer to the React component
 // in the same part folder and with the same name (example.jsx)
 // An ID will be auto-generated, as well as an HTML body with the
 // JSX entry rendered server-side into it.
-
 
 const portal = require('/lib/xp/portal');
 const React4xp = require('/lib/enonic/react4xp');
@@ -18,7 +19,7 @@ exports.get = function(request) {
 
 
 /*
-// Some simple variations on the render method:
+// Some possible variations could be:
 
 
 // request is used to determine XP viewing mode. React4xp won't do a proper react rendering and activation without it,
@@ -35,7 +36,7 @@ return React4xp.render(component, undefined, request);
 
 
 // In the example above, the JSX file for this XP component (same folder, same name)
-// is auto-located using the 'component' argument. An equivalent but more manual way to point to the JSX file
+// is auto-located using the 'component' argument. An equivalent but more manual way to point to the same JSX file
 // would be to use the jsxPath to it:
 
 return React4xp.render("site/parts/01-minimal-example/01-minimal-example", props, request);

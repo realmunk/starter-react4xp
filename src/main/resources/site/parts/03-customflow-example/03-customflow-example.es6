@@ -1,13 +1,20 @@
-// The functions .render and .renderSafe are just shorthand methods. This example replaces them with a more explicit syntax.
-// This syntax provides more fine-grained control and opportunity for logic steps when creating the React component.
-// On the downside, there's no automatic rendering mode for certain viewing modes - it's recommended to take care to prevent
-// react and other client-side scripts from running in edit mode in XP Content Studio.
+// The .render function (in the previous examples 01 and 02) is just a shorthand method:
+// one easy wrapper for the most useful and simple scenario of adding one react entry to one XP part.
 //
-// We'll construct a data-holding React4xp object (reactComp) and use it for rendering the body and the necessary page contributions.
+// This example replaces .render with a more concrete syntax: .renderBody and .renderPageContributions.
 //
-// Other variations:
-// - The id of the target container is inserted into the body with thymeleaf
-// - The jsxPath now refers to a React component (BlueGreeter) outside of XP's /site/ structure, in the base directory /react4xp/_entries.
+// They provide more fine-grained control and opportunity for your own logic steps.
+// On the downside, there's no automatic rendering mode for certain viewing modes
+// - it's recommended to avoid running client-side scripts in edit mode in XP Content Studio, so here we do that manually.
+//
+// We'll construct a data-holding React4xp object and use it for rendering the body and the necessary page contributions.
+//
+// Some other optional variations are demonstrated:
+// - The id of the target container is injected into a thymeleaf-rendered body,
+//      and later react4xp renders the react entry into that target container,
+// - The jsxPath now refers to a React component (ColorThing) outside of XP's /site/ structure,
+//      in the base directory /react4xp/_entries. 'ColorThing' needs no folder structure, since
+//      ColorThing.jsx is at the root of /react4xp/_entries - see the next example for deeper folder locations.
 
 const portal = require('/lib/xp/portal');
 const React4xp = require('/lib/enonic/react4xp');
