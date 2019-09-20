@@ -6,48 +6,58 @@ const view = resolve("04-chaining-example.html");
 
 exports.get = function(request) {
 
-    // Renders BuilderClickerEntry into the "a-target-container" element in the view.
+    // CLIENT-SIDE RENDERING/HYDRATION AND XP CONTENT STUDIO:
+    // Just like in the previous example, it's a good idea to be aware of XP's viewing mode: are the react components
+    // being displayed inside Content Studio (request.mode is 'edit' or 'inline')? If so, the client-side JS of Content
+    // Studio may clash with react's JS.
+    // This flag will allow client-side rendering and hydration outside Content Studio, and will be false inside Content
+    // Studio. This makes React4xp render a static and un-hydrated HTML visualization of the react components here, so
+    // you both get a visualization and safely running Content Studio.
+    // The React4xp.render shorthand function does this automatically, but .renderBody and .renderPageContributions
+    // leave this to the developer.
+    const clientRender = (request.mode !== 'edit' && request.mode !== 'inline');
+
+    // USING REACT COMPONENTS THAT ARE NOT ENTRIES:
+    // Constructs a react4xp object with BuilderClickerEntry, targeting the "a-target-container" element in the view.
     // BuilderClickerEntry.jsx is in the subfolder 'mysubfolder' under the react4xp/_entries folder,
     // and nests the react component BuilderClicker.jsx in it.
-    // Note that BuilderClicker.jsx is NOT a react4xp entry - it's imported from a dependency chunk,
-    // so react4xp can't access it except through BuilderClickerEntry.
-    const firstComp = new React4xp('mySubfolder/BuilderClickerEntry')
+    // Note that BuilderClicker.jsx is NOT a react4xp entry - it's not in below /react4xp/myChunk or /site.
+    // It's imported from the dependency chunk 'myChunk' because BuilderClicker is located under /react4xp/myChunk.
+    // React4xp can only access entries, so BuilderClicker is imported through BuilderClickerEntry.
+    const firstReact4xpObj = new React4xp('mySubfolder/BuilderClickerEntry')
         .setId("a-target-container")
         .setProps({
             first: "Click",
             second: "ME!"
         });
 
+    // ENTRIES CAN BE NESTED:
     // Uses the component to point to and render 04-chaining-example.jsx, in the part's own folder.
-    // It imports both BuilderClickerEntry and BuilderClicker, which will be rendered into the
-    // "another-target-container" element in the view:
-    const secondComp = new React4xp(portal.getComponent())
+    // This JSX imports BuilderClickerEntry (demonstrating that all react4xp entries are also regular react components
+    // and can be imported by other entrues). It targets the "another-target-container" element in the view:
+    const secondReact4xpObj = new React4xp(portal.getComponent())
         .setId("another-target-container")
         .setProps({
             first: "No click ME!",
             second: "I do the exact same thing only better!"
         });
 
-    // Creates a body starting point from the local HTML view:
+    // CHAINING:
+    // Creates a body starting point from the local HTML view. This will be passed through multiple .renderBody functions
+    // that each expand it by rendering react into it:
     let body = thymeleaf.render(view, {});
 
     // Chaining: passes the body through the two react4xp-objects' rendering methods.
-    // firstComp will be server-side-rendered, secondComp will be client-side-rendered
+    // firstReact4xpObj will be server-side-rendered, secondReact4xpObj will be client-side-rendered
     // (note how the clientRender parameter matches in their .renderPageContributions calls below).
-    body = firstComp.renderBody({body});
-    body = secondComp.renderBody({
-        body,
-        clientRender: true
-    });
+    body = firstReact4xpObj.renderBody({ body });
+    body = secondReact4xpObj.renderBody({ body, clientRender });
 
     // Chaining: creates the necessary page contributions for hydration for the first component, and passes them
     // through the second one. The second turn only appends what's necessary, so that shared components and dependency
     // chunks etc aren't loaded twice:
-    let pageContributions = firstComp.renderPageContributions();
-    pageContributions = secondComp.renderPageContributions({
-        pageContributions,
-        clientRender: true
-    });
+    let pageContributions = firstReact4xpObj.renderPageContributions();
+    pageContributions = secondReact4xpObj.renderPageContributions({ pageContributions, clientRender });
 
 
     // ------------------------------
@@ -60,6 +70,7 @@ exports.get = function(request) {
     // Since the react4xp-objects' IDs don't match any element ID in the body,
     // .renderBody generates and adds target container elements automatically.
 
+    // GOTCHA: KEEP THE TARGET CONTAINER IDs UNIQUE:
     // Creates 4 components with different props: "first repeated thing", "second repeated thing", etc.
     // Note that ALL of them are given the same actual ID in setId. That means
     // they all point to the same target container element, and are all rendered into that
@@ -69,8 +80,8 @@ exports.get = function(request) {
             .setId('this-is-not-unique')
             .setProps({ greetee: `${cardinalNum} repeated thing`});
 
-        body = notUniqueComp.renderBody({body});
-        pageContributions = notUniqueComp.renderPageContributions({pageContributions});
+        body = notUniqueComp.renderBody({ body });
+        pageContributions = notUniqueComp.renderPageContributions({ pageContributions });
     });
 
     // Same as above, but with a crucial difference: adding `.uniqueId()` to the ID makes
@@ -83,15 +94,13 @@ exports.get = function(request) {
             .setProps({ greetee: `${cardinalNum} unique thing`});
 
         body = uniqueComp.renderBody({body});
-        pageContributions = uniqueComp.renderPageContributions({pageContributions});
+        pageContributions = uniqueComp.renderPageContributions({ pageContributions });
     });
 
     // Returning the body/pageContribution response from the part
-    // (again, we're manually omitting the pageContributions if we're viewing the component inside Content Studio)
+    // (again, manually omitting the pageContributions if we're viewing the component inside Content Studio)
     return {
         body,
-        pageContributions: (request.mode === 'live' || request.mode === 'preview') ?
-            pageContributions :
-            undefined,
+        pageContributions: clientRender ? pageContributions : undefined,
     };
 };

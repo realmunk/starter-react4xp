@@ -19,18 +19,19 @@ exports.get = function(request) {
 
 
 /*
-// Some possible variations could be:
+// SOME POSSIBLE VARIATIONS:
 
 
 // request is used to determine XP viewing mode. React4xp won't do a proper react rendering and activation without it,
-// since the rendered JS from react4xp occationally clashes with XP's edit and inline modes. If request is omitted,
-// react4xp will only do a server-side rendering of the component (if possible), as a static placeholder -
-// there will be no hydration on the client-side:
+// since the rendered JS from react4xp occationally clashes with XP's edit and inline modes, so .render will try to
+// prevent that.
+// If request is omitted, react4xp will only do a server-side rendering of the component (if possible),
+// as a static placeholder - there will be no hydration on the client-side:
 
 return React4xp.render(component, props);
 
 
-// props are optional: the rendering will work without them, they just won't be available to the react entry:
+// props are optional: the rendering will work fine without them:
 
 return React4xp.render(component, undefined, request);
 
