@@ -1,3 +1,5 @@
+// CHAINING: how to use more than one react4xp entry, or even re-use the same entry more than once, in the same part.
+
 const portal = require('/lib/xp/portal');
 const thymeleaf = require('/lib/thymeleaf');
 const React4xp = require('/lib/enonic/react4xp');
@@ -97,6 +99,7 @@ exports.get = function(request) {
         pageContributions = uniqueComp.renderPageContributions({ pageContributions });
     });
 
+    // FINALLY, OUTPUT:
     // Returning the body/pageContribution response from the part
     // (again, manually omitting the pageContributions if we're viewing the component inside Content Studio)
     return {
