@@ -20,7 +20,7 @@ exports.get = function(request) {
     };
     const params = {
         // Render into the container element with this ID (hardcoded here and in the .html view only for demonstration)...
-        id: 'serverside-example-container',
+        id: 'second-example-container',
         // ...that exists in this body...
         body: thymeleaf.render(view, {}),
         // ...only on the client-side (skip serverside rendering and hydration):
