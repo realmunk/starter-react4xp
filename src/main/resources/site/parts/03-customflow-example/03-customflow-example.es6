@@ -20,14 +20,9 @@ const portal = require('/lib/xp/portal');
 const React4xp = require('/lib/enonic/react4xp');
 const thymeleaf = require('/lib/thymeleaf');
 
-const TARGET_ID = "color-greeter-id";
 const view = resolve('03-customflow-example.html');
-const model = {
-    targetId: TARGET_ID
-};
 
-// We render an optional HTML page that the react component will be injected into.
-const PRE_RENDERED_BODY_TEMPLATE = thymeleaf.render(view, model);
+
 
 // Handle the GET request
 exports.get = function(request) {
@@ -36,34 +31,41 @@ exports.get = function(request) {
     // Constructor needs one mandatory parameter: an XP component object or, as in this case, a jsxPath. 'ColorThing' is the
     // jsxPath to the entry ColorThing.jsx, since that's at the root level of the react4xp-entries folder
     // (src/main/resources/react4xp/_entries).
-    const react4xpObject = new React4xp('ColorThing');
+    const reactObj = new React4xp('ColorThing');
 
-    // Builder pattern for setting additional optional attributes: setId and setProps return react4xpObject itself.
-    react4xpObject
-        .setId(TARGET_ID)
-        .setProps({
-            color: component.config.color
-        });
+    // Builder pattern for setting additional optional attributes: react4xp-object setter methods like setProps
+    // and uniqueId return reactObj itself so you can chain them like this. Order doesn't matter.
+    reactObj
+        .setProps({ color: component.config.color })
+        .uniqueId();
+
+    // Getting the ID and inserting it into the Thymeleaf model, setting the ID of the target container element.
+    const model = {
+        targetId: reactObj.react4xpId
+    };
+
+    // Render an optional HTML page that the react component will be injected into.
+    const preRenderedBody = thymeleaf.render(view, model);
 
     // Just for demonstration: a page contribution that we add to the react4xp output pageContribution by
     // passing it through .renderPageContributions below.
     const preExistingPageContributions = {
-        bodyEnd: `<script>console.log('Okay, rendered the ${react4xpObject.props.color} thing.');</script>`
+        bodyEnd: `<script>console.log('Okay, rendered the ${reactObj.props.color} thing.');</script>`
     };
 
     // Rendering a standard XP response object: body and pageContributions separately
     return {
 
         // .renderBody can be called without any input HTML. If so, it will surround the rendered body with empty placeholder HTML
-        body: react4xpObject.renderBody({
-            body: PRE_RENDERED_BODY_TEMPLATE,
+        body: reactObj.renderBody({
+            body: preRenderedBody,
         }),
 
         // Necessary react-activating scripts through page contributions.
         // We'll skip them if request.mode is 'inline' or 'edit', since that means the page is viewed from inside
         // XP Content Studio and there's a risk that our added scripts would interfere with Content Studio functionality.
         pageContributions: (request.mode === 'live' || request.mode === 'preview') ?
-            react4xpObject.renderPageContributions({
+            reactObj.renderPageContributions({
                 pageContributions: preExistingPageContributions
             }) :
             undefined
