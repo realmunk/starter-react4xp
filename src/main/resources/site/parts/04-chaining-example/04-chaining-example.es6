@@ -7,6 +7,7 @@ const React4xp = require('/lib/enonic/react4xp');
 const view = resolve("04-chaining-example.html");
 
 exports.get = function(request) {
+    const component = portal.getComponent();
 
     // CLIENT-SIDE RENDERING/HYDRATION AND XP CONTENT STUDIO:
     // Just like in the previous example, it's a good idea to be aware of XP's viewing mode: are the react components
@@ -37,11 +38,20 @@ exports.get = function(request) {
     // Uses the component to point to and render 04-chaining-example.jsx, in the part's own folder.
     // This JSX imports BuilderClickerEntry (demonstrating that all react4xp entries are also regular react components
     // and can be imported by other entrues). It targets the "another-target-container" element in the view:
-    const secondReact4xpObj = new React4xp(portal.getComponent())
+    const secondReact4xpObj = new React4xp(component)
         .setId("another-target-container")
         .setProps({
             first: "No click ME!",
             second: "I do the exact same thing only better!"
+        });
+
+    // The exact same entry used more than once.
+    const thirdReact4xpObj = new React4xp(component)
+        // And with a unique ID that's not present in the pre-existing HTML body - causing React4XP to generate it.
+        .setId("a-third-container-doesnt-exist-but-will-be-generated")
+        .setProps({
+            first: "Here I am.",
+            second: "Again."
         });
 
     // CHAINING:
@@ -50,21 +60,23 @@ exports.get = function(request) {
     let body = thymeleaf.render(view, {});
 
     // Chaining: passes the body through the two react4xp-objects' rendering methods.
-    // firstReact4xpObj will be server-side-rendered, secondReact4xpObj will be client-side-rendered
+    // firstReact4xpObj and thirdReact4xpObj will be server-side-rendered, secondReact4xpObj will be client-side-rendered
     // (note how the clientRender parameter matches in their .renderPageContributions calls below).
     body = firstReact4xpObj.renderBody({ body });
     body = secondReact4xpObj.renderBody({ body, clientRender });
+    body = thirdReact4xpObj.renderBody({ body });
 
     // Chaining: creates the necessary page contributions for hydration for the first component, and passes them
-    // through the second one. The second turn only appends what's necessary, so that shared components and dependency
-    // chunks etc aren't loaded twice:
+    // through the second one and third. The last passes only append what's necessary, so that shared components and
+    // chunks etc aren't loaded more than once in the client:
     let pageContributions = firstReact4xpObj.renderPageContributions();
     pageContributions = secondReact4xpObj.renderPageContributions({ pageContributions, clientRender });
+    pageContributions = thirdReact4xpObj.renderPageContributions({ pageContributions });
 
 
     // ------------------------------
     // A horizontal separator comes here in the view: a new section,
-    // demonstrating a way to repeat the same entry multiple times in a part: by using unique IDs.
+    // demonstrating a way to repeat the same entry multiple times in a part: keeping the IDs unique.
     // ------------------------------
 
 
@@ -104,6 +116,8 @@ exports.get = function(request) {
     // (again, manually omitting the pageContributions if we're viewing the component inside Content Studio)
     return {
         body,
-        pageContributions: clientRender ? pageContributions : undefined,
+        pageContributions: clientRender ?
+            pageContributions :
+            undefined,
     };
 };

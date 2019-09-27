@@ -16,7 +16,7 @@ class BuilderClicker extends React.Component {
 
     render() {
         return <div className="builderclicker">
-            <h3>
+            <h3 style={{color:"green"}}>
                 <span onClick={() => this.makeMore('first')}
                       style={{cursor: "pointer"}}
                       className="first">{this.state.first}
