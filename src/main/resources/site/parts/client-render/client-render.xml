@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <part>
-	<display-name>02 - ClientRender Example</display-name>
-    <description>Client-side rendered react component</description>
+	<display-name>Client Rendering</display-name>
+    <description>Second example: client-side rendered react component, and more</description>
 	<form>
         <input name="greetee" type="TextLine">
             <label>Who or what should we greet?</label>

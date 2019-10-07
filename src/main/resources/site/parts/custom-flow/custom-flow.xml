@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <part>
-	<display-name>03 - CustomFlow Example</display-name>
-    <description>AKA. The Color Thing</description>
+	<display-name>Custom Flow</display-name>
+    <description>Third example: react4xp object syntax, and more</description>
 	<form>
         <input name="color" type="TextLine">
             <label>What's the color of the thing?</label>

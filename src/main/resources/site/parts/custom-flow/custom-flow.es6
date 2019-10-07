@@ -1,4 +1,6 @@
-// The .render function (in the previous examples 01 and 02) is just a shorthand method:
+// THIRD EXAMPLE
+//
+// The .render function (in the previous examples hello-react and client-render) is just a shorthand method:
 // one easy wrapper for the most useful and simple scenario of adding one react entry to one XP part.
 //
 // This example replaces .render with a more concrete syntax: .renderBody and .renderPageContributions.
@@ -20,7 +22,7 @@ const portal = require('/lib/xp/portal');
 const React4xp = require('/lib/enonic/react4xp');
 const thymeleaf = require('/lib/thymeleaf');
 
-const view = resolve('03-customflow-example.html');
+const view = resolve('custom-flow.html');
 
 
 

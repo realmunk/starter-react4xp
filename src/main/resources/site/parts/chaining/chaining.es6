@@ -1,10 +1,12 @@
+// FOURTH AND LAST EXAMPLE
+//
 // CHAINING: how to use more than one react4xp entry, or even re-use the same entry more than once, in the same part.
 
 const portal = require('/lib/xp/portal');
 const thymeleaf = require('/lib/thymeleaf');
 const React4xp = require('/lib/enonic/react4xp');
 
-const view = resolve("04-chaining-example.html");
+const view = resolve("chaining.html");
 
 exports.get = function(request) {
     const component = portal.getComponent();
@@ -35,7 +37,7 @@ exports.get = function(request) {
         });
 
     // ENTRIES CAN BE NESTED:
-    // Uses the component to point to and render 04-chaining-example.jsx, in the part's own folder.
+    // Uses the component to point to and render chaining.jsx, in the part's own folder.
     // This JSX imports BuilderClickerEntry (demonstrating that all react4xp entries are also regular react components
     // and can be imported by other entrues). It targets the "another-target-container" element in the view:
     const secondReact4xpObj = new React4xp(component)
@@ -90,7 +92,7 @@ exports.get = function(request) {
     // they all point to the same target container element, and are all rendered into that
     // so only the last one will be visible:
     ['first', 'second', 'third', 'fourth'].forEach(cardinalNum => {
-        const notUniqueComp = new React4xp('site/parts/01-minimal-example/01-minimal-example')
+        const notUniqueComp = new React4xp('site/parts/hello-react/hello-react')
             .setId('this-is-not-unique')
             .setProps({ greetee: `${cardinalNum} repeated thing`});
 
@@ -103,7 +105,7 @@ exports.get = function(request) {
     // different ID, so 4 container elements are added to body instead of one - and
     // all four become visible.
     ['first', 'second', 'third', 'fourth'].forEach(cardinalNum => {
-        const uniqueComp = new React4xp('site/parts/01-minimal-example/01-minimal-example')
+        const uniqueComp = new React4xp('site/parts/hello-react/hello-react')
             .setId('this-id-is-unique').uniqueId()
             .setProps({ greetee: `${cardinalNum} unique thing`});
 

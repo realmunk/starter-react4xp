@@ -1,3 +1,5 @@
+// FIRST EXAMPLE
+//
 // Minimal example, server-side rendering with hydration
 // (hydration is client-side react activating a pre-rendered react component).
 //
@@ -40,6 +42,6 @@ return React4xp.render(component, undefined, request);
 // is auto-located using the 'component' argument. An equivalent but more manual way to point to the same JSX file
 // would be to use the jsxPath to it:
 
-return React4xp.render("site/parts/01-minimal-example/01-minimal-example", props, request);
+return React4xp.render("site/parts/hello-react/hello-react", props, request);
 
  */
